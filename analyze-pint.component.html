@@ -1,0 +1,136 @@
+<section class="container fixed-header">
+  <mat-toolbar *ngIf="!cropperReady; else default">
+    <button class="menu-button left" (click)="goBack()">
+      <span class="icon icon-back"></span>
+    </button>
+    <div class="title">Quality Survey</div>
+
+    <button class="menu-button right" (click)="goToHomepage()">
+      <span class="icon icon-close"></span>
+    </button>
+  </mat-toolbar>
+
+  <ng-template #default>
+    <mat-toolbar>
+      <button class="menu-button left" (click)="closeCropper()">
+        <span class="icon icon-back"></span>
+      </button>
+      <div class="title">Quality Survey</div>
+
+      <button class="menu-button right" (click)="goToHomepage()">
+        <span class="icon icon-close"></span>
+      </button>
+    </mat-toolbar>
+  </ng-template>
+
+  <div *ngIf="!hideElement && !base64">
+    <section class="card-intro">
+      <img mat-card-image src="/assets/images/c7.png" alt="Crafted presentation" class="card-image">
+      <div class="section-title padding">
+        <div class="headline strikethrough animateItem text-center">
+          <div class="title text-tall text-white">C7</div>
+        </div>
+        <div class="subtitle text-white text-center">Crafted presentation</div>
+      </div>
+    </section>
+
+    <div class="container_inner padding" *ngIf="!hideElement">
+      <div class="wave-pattern"></div>
+      <div class="top card-container">
+        <div class="card-wrapper" *ngIf="!base64">
+          <mat-card>
+            <video name="Take a photo" class="infographic" autoplay webkit-playsinline="true" controls loop playsinline
+              id="video">
+              <source src="/assets/videos/video_7Cs.mov" />
+              <source src="/assets/videos/video_7Cs.mp4" />
+            </video>
+          </mat-card>
+        </div>
+      </div>
+
+
+      <div class="bottom padding">
+        <label for="file">
+          <input type="file" accept="image/*;" id="file" (change)="fileChangeEvent($event)"> TAKE PHOTO
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="cropper-wrapper">
+    <div class="content__video"></div>
+    <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="false" [resizeToWidth]="282"
+      format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+      (loadImageFailed)="imageLoadFailed()" style="max-height: 75vh" [style.display]="cropperReady ? null : 'none'">
+    </image-cropper>
+  </div>
+
+  <div class="padding pd-top-20 pd-bottom-20" [style.display]="cropperReady ? null : 'none'">
+    <p class="body-copy text-dark-grey">Almost there! If you didn’t quite take the perfect picture, crop the photo to
+      center the pint and ensure the Guinness
+      logo falls within the central target.</p>
+  </div>
+
+  <div class="bottom padding" *ngIf="showThis">
+    <button (click)="analyze()" mat-button mat-raised-button color="primary">Analyze image</button>
+  </div>
+
+  <div *ngIf="!animationDone && analyzing" class="analyzing-image">
+    <div class="container overlay">
+
+
+      <img class="cropped-image" [src]="croppedImage" />
+      <div class="center">
+        <div class="spinner">
+          <div class="outer-circle">
+            <svg width="324px" height="324px" viewBox="0 0 324 324">
+              <circle
+                [ngClass]="{'circle': analyzing, 'circle-complete': responseFromClarifai, 'circle-spin': !responseFromClarifai}"
+                cx="161.5" cy="161.5" r="156.5" fill="none" stroke="#BE955B" stroke-miterlimit="10"
+                stroke-width="5px" />
+            </svg>
+          </div>
+          <div class="points" [ngClass]="{'points': analyzing, 'points-scaled': responseFromClarifai}">
+            <svg width="324px" height="324px" viewBox="0 0 324 324" version="1.1">
+              <defs></defs>
+              <g id="Design" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="QA---Analysing-pint" transform="translate(-28.000000, -187.000000)" fill="#BE955B"
+                  stroke="#BE955B" stroke-width="2">
+                  <g id="7-points" transform="translate(29.000000, 188.000000)">
+                    <circle id="Oval-Copy" [ngClass]="{'point-scaled': responseFromClarifai}" cx="160" cy="7" r="7">
+                    </circle>
+                    <circle id="Oval-Copy" [ngClass]="{'point-scaled': responseFromClarifai}" cx="38" cy="66" r="7">
+                    </circle>
+                    <circle id="Oval-Copy" [ngClass]="{'point-scaled': responseFromClarifai}" cx="8.5" cy="200" r="7">
+                    </circle>
+                    <circle id="Oval-Copy" [ngClass]="{'point-scaled': responseFromClarifai}" cx="95" cy="306" r="7">
+                    </circle>
+                    <circle id="Oval-Copy" [ngClass]="{'point-scaled': responseFromClarifai}" cx="229" cy="304" r="7">
+                    </circle>
+                    <circle id="Oval-Copy" [ngClass]="{'point-scaled': responseFromClarifai}" cx="283" cy="65" r="7">
+                    </circle>
+                    <circle id="Oval-Copy" [ngClass]="{'point-scaled': responseFromClarifai}" cx="313" cy="200" r="7">
+                    </circle>
+                  </g>
+                </g>
+                <polyline id="Path-3" [ngClass]="{'check': analyzing, 'check-animate': responseFromClarifai}"
+                  fill="none" stroke="#BE955B" stroke-width="5px"
+                  points="29.6523438 56.0820312 56.3554688 87.9570312 137.632812 15.7539062"></polyline>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+      <div class="progress-bar">
+        <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
+        <div class="feedback mg-top-20 text-gold text-round title-md"
+          [ngClass]="{'hidden': responseFromClarifai, 'blink': !responseFromClarifai}">Analyzing pint...</div>
+        <div class="feedback mg-top-20 text-gold text-round title-md" [ngClass]="{'hidden': !responseFromClarifai}">Pint
+          analyzed</div>
+      </div>
+    </div>
+  </div>
+</section>
